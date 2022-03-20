@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery-3.6.0.js"></script>
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body class="container-fluid">
+
+<div class="row">
+    <div class="col">
+        <div id="id2">sakrij me nemam me</div>
+        <button id="btn" class="btn btn-primary" onclick="sakrijme()">Sakrij me</button>
+    </div>
+</div>
+
+<script>
+    let calls = [
+        {
+            method: "$",
+            params: ["#id2"]
+        },
+        {
+            method: "hide",
+            params: []
+        }
+    ];
+
+    function executeCalls(calls) {
+        let lasObj = window;
+        for (let call of calls) {
+            if (call.params.length == 0) {
+                lasObj = executeFunctionByName(call.method, lasObj);
+            } else {
+                lasObj = executeFunctionByName(call.method, lasObj, call.params)
+            }
+            console.log("lasObj", lasObj, " method ", call.method, " params ", call.params);
+        }
+    }
+
+    function checkCallback(args) {
+        args.forEach(function (element, index, theArray) {
+            if (element._name === 'callback') {
+                theArray[index] = function () {
+                    console.log("arguments", arguments)
+                    executeCalls(element.calls);
+                }
+            }
+            //theArray[index] = "hello world";
+        });
+        return args;
+    }
+
+    function executeFunctionByName(functionName, context /*, args */) {
+        let args = Array.prototype.slice.call(arguments, 2).flat();
+        //  console.log("args ", args);
+        const namespaces = functionName.split(".");
+        const func = namespaces.pop();
+        for (let i = 0; i < namespaces.length; i++) {
+            context = context[namespaces[i]];
+        }
+        // debugger;
+        args = checkCallback(args);
+        return context[func].apply(context, args);
+    }
+
+
+    function sakrijme() {
+        executeCalls(calls);
+    }
+</script>
+
+
+<div class="card mt-3 w-75">
+    <div class="card-body">
+        <div>ddodaj mi klasu
+            Example heading <span id="pero">New</span>
+        </div>
+        <button class="btn btn-primary" id="btnAddClass">add class</button>
+
+    </div>
+</div>
+<script>
+    let callsBadge = [
+        {
+            method: "$", params: ["#pero"]
+        },
+        {
+            method: "addClass", params: [["badge", "bg-secondary"]]
+        }
+    ];
+    //$("#pero").addClass( ["badge", "bg-secondary"]);
+    $("#btnAddClass").on("click", () => {
+        executeCalls(callsBadge);
+    });
+</script>
+<!--FUNCTION-->
+
+<div class="card mt-3 w-75">
+    <div class="card-header">
+        <div class="card-title ">Add function</div>
+    </div>
+    <div class="card-body">
+        <button class="btn btn-primary" id="btnFunction">add function</button>
+        <!--        <button class="btn btn-secondary" id="alert">allert</button>-->
+    </div>
+</div>
+<script>
+
+    let eventCallBack = {
+        _name: "callback_args"
+    }
+
+    let callback = {
+        _name: "callback",
+        calls: [{
+            method: "alert", params: ["pozvao calback!!!!"]
+           }
+        ]
+
+    }
+    // $("#btnFunction").on("click", function () {
+    //     // calls
+    //
+    // });
+    let callsFunction = [
+        {
+            method: "$", params: ["#btnFunction"]
+        }, {
+            method: "on", params: ["click", callback]
+        }
+    ]
+    // $("#btnFunction").on("click", () => {
+    executeCalls(callsFunction);
+    //});
+</script>
+
+
+</body>
+</html>

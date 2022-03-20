@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery-3.6.0.js"></script>
+</head>
+<body>
+
+<h2 id="id2">reflect</h2>
+
+
+<script>
+
+    let functionName = "$";
+    let param = "#id2"
+
+    let res = Reflect.construct(window[functionName], param);
+    console.log(res)
+
+
+</script>
+
+</body>
+</html>
