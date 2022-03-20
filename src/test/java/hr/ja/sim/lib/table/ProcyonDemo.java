@@ -1,55 +1,41 @@
 package hr.ja.sim.lib.table;
 
-import com.github.ruediste.lambdaInspector.Lambda;
-import com.github.ruediste.lambdaInspector.LambdaInspector;
-import com.github.ruediste.lambdaInspector.expr.ExpressionVisitor;
-import com.strobel.assembler.InputTypeLoader;
-import com.strobel.assembler.metadata.ClasspathTypeLoader;
-import com.strobel.decompiler.AnsiTextOutput;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
-import com.strobel.decompiler.ast.Expression;
-import com.strobel.decompiler.languages.Language;
 import com.strobel.decompiler.languages.Languages;
-import hr.ja.sim.lib.Route;
+import hr.ja.sim.demo.Page1;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
-import java.util.Comparator;
-import java.util.function.Consumer;
 
 public class ProcyonDemo {
 
-    @SneakyThrows
-    public static void main2(String[] args) {
-        Button b = new Button();
-
-//        SerializedLambda serializedLambda = getSerializedLambda(myLa);
-//        StringWriter s = new StringWriter();
-//        Decompiler.decompile(getClassName(serializedLambda.getClass()), new PlainTextOutput(s));
-//        System.out.println(s);
-        //b.onClick(myLa);
-
-    }
-
     public static void main(String[] args) {
 
-     //   LambdaInspector.setup();
+//        StopWatch s = StopWatch.createStarted();
+//        ProcyonDemo.printClass(Page1.class);
+//        s.stop();
+//        System.out.println(DurationFormatUtils.formatDurationHMS(s.getTime()));
         Button b = new Button();
-        b.onClick(ajaxReq -> {
-            int adqwd = 123 + 12;
-            String pero = new String();
-            int demo = Integer.parseInt(String.valueOf(adqwd));
-            System.out.println(demo);
+        b.browserClick(new Button.BrowserClickHandler() {
+            @Override
+            public void onCLick() {
+                System.out.println("pozvao on click");
+            }
         });
-
-        ProcyonDemo.printClass(ProcyonDemo.class);
+        b.browserClick(new Button.BrowserClickHandler() {
+            @Override
+            public void onCLick() {
+                System.out.println("dva");
+            }
+        });
     }
 
 
@@ -86,9 +72,9 @@ public class ProcyonDemo {
     public static void printClass(SerializedLambda sl) {
         StringWriter s = new StringWriter();
         String name = sl.getCapturingClass();
-       // name = sl.getImplClass()+"."+sl.getImplMethodName()+":"+sl.getImplMethodSignature();
+        // name = sl.getImplClass()+"."+sl.getImplMethodName()+":"+sl.getImplMethodSignature();
         //implClass, implMethodName, implMethodSignature,
-          //      %s.%s:%s
+        //      %s.%s:%s
         System.out.println(name);
         System.out.println(sl);
         Decompiler.decompile(name, new PlainTextOutput(s));
@@ -109,15 +95,16 @@ interface MyConsumer<T> extends Serializable {
 
     default void pero() {
 
-    };
+    }
+
+    ;
 }
 
 class Button {
 
     @SneakyThrows
     void onClick(MyConsumer<AjaxReq> c) {
-       // LambdaInspector.inspect(c);
-
+        // LambdaInspector.inspect(c);
 
 
         // Lambda inspect = LambdaInspector.inspect(ss);
@@ -126,7 +113,19 @@ class Button {
     }
 
 
+    public void browserClick(BrowserClickHandler c) {
+        System.out.println("class hash code "+ c.hashCode());
+        StopWatch s = StopWatch.createStarted();
+        ProcyonDemo.printClass(c.getClass());
+        s.stop();
+        System.out.println(DurationFormatUtils.formatDurationHMS(s.getTime()));
+    }
+
+    public abstract static class BrowserClickHandler {
+        public abstract void onCLick();
+    }
 }
+
 
 class AjaxReq {
 

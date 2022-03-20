@@ -1,5 +1,6 @@
 package hr.ja.sim.lib;
 
+import hr.ja.sim.demo.Page1;
 import hr.ja.sim.lib.js.Browser;
 import j2html.tags.specialized.ButtonTag;
 import lombok.Getter;
